@@ -5,7 +5,7 @@ name: AI LP Generator
 on:
   push:
     paths:
-      - 'Hearingsheet.md'  # 「hearing.mdが更新された時だけ動く」という条件
+      - 'HearingSheet.md'  # 「hearing.mdが更新された時だけ動く」という条件
 
 # 3. 実行する処理の集まり
 jobs:
