@@ -19,7 +19,7 @@ async function run() {
   console.log(`使用するテンプレート: ${templateFile}`);
 
   // 2. ファイルの読み込み
-  const hearingSheet = fs.readFileSync("hearing.md", "utf8");
+  const hearingSheet = fs.readFileSync("HearingSheet.md", "utf8");
   const templateHtml = fs.readFileSync(templateFile, "utf8");
 
   // 3. AIへのプロンプト
