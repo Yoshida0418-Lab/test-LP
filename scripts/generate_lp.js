@@ -4,7 +4,7 @@ const path = require("path");
 
 async function run() {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-Flash-Lite" });
 
   // 1. テンプレートファイルを特定する
   // カレントディレクトリから「Template」で始まり「.html」で終わるファイルを探す
