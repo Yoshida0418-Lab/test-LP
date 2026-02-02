@@ -1,1 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowHub | チームの生産性を、次のステージへ</title>
+    <meta name="description" content="タスク管理、進捗の可視化、チームコミュニケーション。すべてを一つのプラットフォームで。FlowHubなら、プロジェクトの成功がもっと身近になります。">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        neon: {
+                            cyan: '#06b6d4',
+                            pink: '#d946ef',
+                            purple: '#8b5cf6',
+                            dark: '#0f172a',
+                        }
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 10px #06b6d4, 0 0 20px rgba(6, 182, 212, 0.5)',
+                        'neon-pink': '0 0 10px #d946ef, 0 0 20px rgba(217, 70, 239, 0.5)',
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Utilities for Glassmorphism & Details */
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #1f2937 1px, transparent 1px),
+                              linear-gradient(to bottom, #1f2937 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #06b6d4, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-neon {
+            transition: all 0.3s ease;
+        }
+        .btn-neon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.6);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="fixed inset-0 z-[-1] bg-grid-pattern opacity-20 pointer-events-none"></div>
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-neon-purple opacity-20 rounded-full blur-[128px] pointer-events-none animate-pulse-slow"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-cyan opacity-10 rounded-full blur-[128px] pointer-events-none"></div>
+
+    <header class="fixed w-full z-50 top-0 transition-all duration-300 bg-black/50 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <svg class="w-8 h-8 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span class="font-bold text-2xl tracking-tighter">FlowHub</span>
+                </div>
+
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-300 hover:text-neon-cyan transition-colors text-sm font-medium">特徴</a>
+                    <a href="#process" class="text-gray-300 hover:text-neon-cyan transition-colors text-sm font-medium">プロセス</a>
+                    <a href="#pricing" class="text-gray-300 hover:text-neon-cyan transition-colors text-sm font-medium">料金</a>
+                </nav>
+
+                <div class="hidden md:flex">
+                    <a href="#contact" class="px-5 py-2 rounded-full border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan hover:text-black transition-all duration-300 text-sm font-bold shadow-neon-cyan">
+                        無料デモを試す
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <div class="inline-block mb-6 px-4 py-1.5 rounded-full border border-neon-purple/30 bg-neon-purple/10 backdrop-blur-sm">
+                <span class="text-neon-purple text-xs font-bold tracking-widest uppercase">AI Powered Platform</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-tight">
+                チームの生産性を、<br>
+                <span class="text-gradient">次のステージへ</span>
+            </h1>
+
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-400 mb-10">
+                タスク管理、進捗の可視化、チームコミュニケーション。すべてを一つのプラットフォームで。
+                <span class="text-white font-bold border-b border-neon-cyan">FlowHubなら、プロジェクトの成功がもっと身近になります。</span>
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#contact" class="btn-neon bg-neon-pink text-white px-8 py-4 rounded-full font-bold text-lg shadow-neon-pink">
+                    無料で始める - クレカ不要
+                </a>
+                <a href="#features" class="group px-8 py-4 rounded-full border border-gray-600 text-gray-300 hover:border-white hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5 group-hover:text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    機能を見る
+                </a>
+            </div>
+
+            <div class="mt-20 relative md:animate-float">
+                <div class="absolute inset-0 bg-neon-cyan blur-[100px] opacity-20 rounded-full mx-auto w-2/3 h-full"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-10 border-y border-white/5 bg-black/30">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm font-semibold tracking-wider uppercase mb-6">世界中の1,200社以上が導入</p>
+            <div class="flex flex-wrap justify-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                <div class="text-2xl font-bold text-white flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg> GLOBEX</div>
+                <div class="text-2xl font-bold text-white flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg> NEXUS</div>
+                <div class="text-2xl font-bold text-white flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> QUANTUM</div>
+                <div class="text-2xl font-bold text-white flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> AETHER</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">チームの力を、<span class="text-neon-cyan">最大限に引き出す</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">煩雑なタスク管理やコミュニケーションの壁をなくし、本来集中すべきプロジェクトの成功に貢献します。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 group">
+                    <div class="w-14 h-14 rounded-lg bg-neon-cyan/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">プログラマティック生成</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        CSVデータを流し込むだけで、数千パターンのLPを瞬時に生成します。
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 group">
+                    <div class="w-14 h-14 rounded-lg bg-neon-pink/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-neon-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">リアルタイム同期</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        どこにいても、誰とでも。チームの進捗がリアルタイムで同期され、コラボレーションが加速します。
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/5 transition-all duration-300 group">
+                    <div class="w-14 h-14 rounded-lg bg-neon-purple/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-neon-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">直感的なダッシュボード</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        複雑な設定は不要。ドラッグ&ドロップで簡単にタスクを管理し、プロジェクトの全体像を一目で把握できます。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process" class="py-24 bg-gradient-to-b from-black to-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="w-full lg:w-1/2 relative">
+                    <div class="absolute -inset-4 bg-neon-cyan/30 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="Cyberpunk Security" class="relative rounded-2xl shadow-2xl glass-card border border-white/10 w-full transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                </div>
+
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                        <span class="text-neon-cyan">シンプルで、パワフル。</span><br>
+                        プロジェクト管理の常識が変わる。
+                    </h2>
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center mt-1">
+                                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-gray-200">チームの進捗をリアルタイムで可視化</h4>
+                                <p class="text-gray-400 text-sm">誰が何をしているか、遅延は発生していないか。一目で把握し、迅速な意思決定をサポートします。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-neon-cyan/10 flex items-center justify-center mt-1">
+                                <svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-white">ストレスフリーなコミュニケーション</h4>
+                                <p class="text-gray-400 text-sm">コメント機能やメンション機能で、必要な情報がすぐに届きます。チャットツールの乱立による情報分散を防ぎます。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-24 relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-neon-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+            <h2 class="text-4xl md:text-5xl font-black mb-8">
+                今すぐ、<span class="text-neon-pink">チームの進化</span>を体験。
+            </h2>
+            <p class="text-xl text-gray-300 mb-12">
+                無料プランから始め、必要に応じてアップグレード。あなたのチームに最適なプランが見つかります。
+            </p>
+
+            <div class="glass-card p-10 rounded-3xl border border-neon-cyan/30 shadow-neon-cyan/20 max-w-xl mx-auto relative group flex flex-col">
+                <h3 class="text-2xl font-bold mb-2">プロプラン</h3>
+                <div class="text-5xl font-black text-white mb-6">
+                    ¥4,980<span class="text-lg font-normal text-gray-400">/月</span>
+                </div>
+                <ul class="text-left space-y-3 mb-8 text-gray-300 flex-grow">
+                    <li class="flex items-center gap-2"><svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 無制限プロジェクト</li>
+                    <li class="flex items-center gap-2"><svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 高度な分析機能</li>
+                    <li class="flex items-center gap-2"><svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 優先サポート</li>
+                </ul>
+                <a href="#contact" class="block w-full btn-neon bg-gradient-to-r from-neon-cyan to-blue-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg mt-auto">
+                    今すぐFlowHubを体験する
+                </a>
+            </div>
+            <p class="text-center text-sm text-gray-400 mt-6">最初の30日間は全機能無料でお試し可能！</p>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-900/50">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">よくある質問</h2>
+            <div class="space-y-4">
+                <details class="group glass-card rounded-lg p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-200 list-none">
+                        どのようなチームに適していますか？
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <p class="text-gray-400 mt-4 text-sm">
+                        FlowHubは、小規模なスタートアップから大企業まで、あらゆる規模のチームが効率的にプロジェクトを進めるために設計されています。特に、複数のプロジェクトを管理し、チーム間の連携を強化したいと考えているチームに最適です。
+                    </p>
+                </details>
+                <details class="group glass-card rounded-lg p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-200 list-none">
+                        無料プランでも十分に使えますか？
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <p class="text-gray-400 mt-4 text-sm">
+                        はい、無料プランでも基本的なタスク管理やコミュニケーション機能をご利用いただけます。チームの規模やプロジェクトの複雑さに応じて、プロプランへのアップグレードをご検討ください。
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 relative">
+        <div class="absolute inset-0 bg-neon-purple/5"></div>
+        <div class="max-w-3xl mx-auto px-4 relative z-10">
+            <div class="glass-card p-8 md:p-12 rounded-3xl border border-neon-pink/30 shadow-2xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">まずは無料で体験！</h2>
+                    <p class="text-gray-300">
+                        以下のフォームに必要事項をご記入ください。
+                        <span class="text-neon-cyan">FlowHubの全機能をお試しいただける、無料アカウント</span>を発行します。
+                    </p>
+                </div>
+
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">会社名</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-lg glass-input" placeholder="株式会社FlowHub">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">お名前</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-lg glass-input" placeholder="佐藤 一郎">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">メールアドレス</label>
+                        <input type="email" class="w-full px-4 py-3 rounded-lg glass-input" placeholder="ichiro.sato@example.com">
+                    </div>
+                    
+                    <button type="button" class="w-full btn-neon bg-neon-pink text-white font-bold py-4 rounded-xl text-lg shadow-neon-pink mt-4">
+                        無料アカウントを申請する
+                    </button>
+                    <p class="text-center text-xs text-gray-500 mt-4">
+                        送信ボタンを押すことで、<a href="#" class="underline hover:text-white">利用規約</a>に同意したことになります。
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-12 border-t border-white/10 mb-20 md:mb-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span class="font-bold text-xl text-gray-500">FlowHub</span>
+            </div>
+            
+            <div class="text-sm text-gray-500">
+                &copy; 2026 FlowHub Inc. All rights reserved.
+            </div>
+
+            <div class="flex gap-4 text-sm text-gray-500">
+                <a href="#" class="hover:text-white transition-colors">プライバシーポリシー</a>
+                <a href="#" class="hover:text-white transition-colors">特定商取引法に基づく表記</a>
+                <a href="#" class="hover:text-white transition-colors">運営会社</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="fixed bottom-0 w-full p-4 bg-black/80 backdrop-blur-md md:hidden z-50 border-t border-white/10">
+        <a href="#contact" class="block w-full bg-neon-pink text-white text-center font-bold py-3 rounded-lg shadow-neon-pink">
+            無料でデモを試す
+        </a>
+    </div>
+
+</body>
+</html>
