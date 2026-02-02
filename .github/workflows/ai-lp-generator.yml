@@ -1,0 +1,43 @@
+# 1. ワークフローの名前（GitHubの画面上に表示される名前）
+name: AI LP Generator
+
+# 2. トリガー（いつ実行するか）
+on:
+  push:
+    paths:
+      - 'Hearingsheet.md'  # 「hearing.mdが更新された時だけ動く」という条件
+
+# 3. 実行する処理の集まり
+jobs:
+  generate-lp:
+    runs-on: ubuntu-latest  # 実行環境（GitHubが貸してくれる無料のLinuxサーバー）
+
+    # 4. 具体的な手順（ステップ）
+    steps:
+      # 手順a: コードをサーバーに持ってくる
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 手順b: Node.jsを使えるようにする
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 手順c: AIを動かす（ここが肝！）
+      - name: Generate LP with Gemini
+        env:
+          # シークレット（金庫）から値を取り出して、環境変数にセットする
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
+        run: |
+          npm install @google/generative-ai
+          node scripts/generate_lp.js
+
+      # 手順d: AIが書き換えた結果を自分のリポジトリに保存する
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add index.html
+          git commit -m "AIによる自動生成"
+          git push

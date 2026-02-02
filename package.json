@@ -1,0 +1,11 @@
+{
+  "name": "ai-lp-generator",
+  "version": "1.0.0",
+  "description": "LP generation system using Gemini API",
+  "main": "scripts/generate_lp.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0"
+  },
+  "author": "Takumi-0418",
+  "license": "MIT"
+}
